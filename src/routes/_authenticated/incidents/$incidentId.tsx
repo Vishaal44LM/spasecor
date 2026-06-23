@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useProfile } from "@/hooks/use-profile";
+import { useOrgMembers, memberName } from "@/hooks/use-members";
 import { logActivity, notify } from "@/lib/activity";
 import { analyzeIncident } from "@/lib/ai.functions";
 import { buildIncidentReportSections, downloadIncidentPdf } from "@/lib/report";
