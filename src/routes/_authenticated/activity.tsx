@@ -15,7 +15,7 @@ function ActivityPage() {
     queryFn: async () => {
       const { data } = await supabase
         .from("activity_log")
-        .select("*, profiles(name), incidents(incident_number)")
+        .select("*, user_id, incidents(incident_number)")
         .order("created_at", { ascending: false })
         .limit(200);
       return data ?? [];

@@ -83,7 +83,7 @@ function IncidentDetail() {
     queryFn: async () => {
       const { data } = await supabase
         .from("incident_comments")
-        .select("*, profiles(name)")
+        .select("*, user_id")
         .eq("incident_id", incidentId)
         .order("created_at", { ascending: true });
       return data ?? [];
@@ -131,7 +131,7 @@ function IncidentDetail() {
     queryFn: async () => {
       const { data } = await supabase
         .from("activity_log")
-        .select("*, profiles(name)")
+        .select("*, user_id")
         .eq("incident_id", incidentId)
         .order("created_at", { ascending: false });
       return data ?? [];
