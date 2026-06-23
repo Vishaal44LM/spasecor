@@ -447,8 +447,8 @@ function CommentsSection({
   comments,
 }: {
   incidentId: string;
-  organizationId?: string;
-  comments: { id: string; body: string; created_at: string; profiles: { name?: string } | null }[];
+  organizationId?: string | null;
+  comments: { id: string; body: string; created_at: string; user_id: string | null }[];
 }) {
   const qc = useQueryClient();
   const [text, setText] = useState("");
@@ -485,7 +485,7 @@ function CommentsSection({
           {comments.map((c) => (
             <div key={c.id} className="rounded-md border bg-muted/30 p-3">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-medium">{c.profiles?.name ?? "Member"}</span>
+                <span className="font-medium">{memberName(members, c.user_id)}</span>
                 <span className="text-muted-foreground">{new Date(c.created_at).toLocaleString()}</span>
               </div>
               <p className="mt-1.5 whitespace-pre-wrap text-sm">{c.body}</p>
@@ -509,8 +509,8 @@ function InvestigationSection({
   incidentId, organizationId, comments,
 }: {
   incidentId: string;
-  organizationId?: string;
-  comments: { id: string; body: string; created_at: string; profiles: { name?: string } | null }[];
+  organizationId?: string | null;
+  comments: { id: string; body: string; created_at: string; user_id: string | null }[];
 }) {
   const qc = useQueryClient();
   const [text, setText] = useState("");
@@ -539,7 +539,7 @@ function InvestigationSection({
         {comments.map((c) => (
           <div key={c.id} className="rounded-md border-l-2 border-primary bg-primary/5 p-3">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-medium">{c.profiles?.name ?? "Investigator"}</span>
+              <span className="font-medium">{memberName(members, c.user_id)}</span>
               <span className="text-muted-foreground">{new Date(c.created_at).toLocaleString()}</span>
             </div>
             <p className="mt-1.5 whitespace-pre-wrap text-sm">{c.body}</p>
@@ -558,7 +558,7 @@ function EvidenceSection({
   incidentId, organizationId, evidence,
 }: {
   incidentId: string;
-  organizationId?: string;
+  organizationId?: string | null;
   evidence: { id: string; file_name: string; file_path: string; mime_type: string | null; file_size: number | null; created_at: string }[];
 }) {
   const qc = useQueryClient();
@@ -816,7 +816,7 @@ function ResolutionCard({
   incidentId, organizationId, currentSummary, onSaved,
 }: {
   incidentId: string;
-  organizationId?: string;
+  organizationId?: string | null;
   currentSummary: string;
   onSaved: () => void;
 }) {
@@ -855,7 +855,7 @@ function ReportsSection({
   asset: { name?: string; asset_type?: string; mission_name?: string | null } | null;
   analyses: { payload: unknown }[];
   reports: { id: string; title: string; content: unknown; created_at: string }[];
-  organizationId?: string;
+  organizationId?: string | null;
 }) {
   const qc = useQueryClient();
 
