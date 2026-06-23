@@ -53,6 +53,7 @@ function IncidentDetail() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { data: profile } = useProfile();
+  const { data: members } = useOrgMembers();
 
   const { data: incident } = useQuery({
     queryKey: ["incident", incidentId],
@@ -164,7 +165,7 @@ function IncidentDetail() {
       organizationId: profile.organization_id,
       userId: profile.id,
       type: "status_changed",
-      title: `${incident.incident_number} → ${STAGE_LABELS[next as keyof typeof STAGE_LABELS]}`,
+      title: `${incident!.incident_number} → ${STAGE_LABELS[next as keyof typeof STAGE_LABELS]}`,
       link: `/incidents/${incidentId}`,
     });
     qc.invalidateQueries({ queryKey: ["incident", incidentId] });
@@ -452,6 +453,7 @@ function CommentsSection({
   comments: { id: string; body: string; created_at: string; user_id: string | null }[];
 }) {
   const qc = useQueryClient();
+  const { data: members } = useOrgMembers();
   const [text, setText] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -514,6 +516,7 @@ function InvestigationSection({
   comments: { id: string; body: string; created_at: string; user_id: string | null }[];
 }) {
   const qc = useQueryClient();
+  const { data: members } = useOrgMembers();
   const [text, setText] = useState("");
 
   async function submit() {

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Activity as ActivityIcon } from "lucide-react";
+import { useOrgMembers, memberName } from "@/hooks/use-members";
 
 export const Route = createFileRoute("/_authenticated/activity")({
   head: () => ({ meta: [{ title: "Activity & audit — Spasecor" }] }),
@@ -10,6 +11,7 @@ export const Route = createFileRoute("/_authenticated/activity")({
 });
 
 function ActivityPage() {
+  const { data: members } = useOrgMembers();
   const { data } = useQuery({
     queryKey: ["activity-full"],
     queryFn: async () => {
