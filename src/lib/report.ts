@@ -28,7 +28,7 @@ export function buildIncidentReportSections(args: {
     `Incident ${incident.incident_number} (${incident.threat_category}) on asset ${asset?.name ?? "unknown"} at priority ${incident.priority}.`;
 
   const threat = (ai?.threat_analysis ?? {}) as Record<string, string>;
-  const scenario = ((ai?.attack_scenario ?? []) as string[]) ?? [];
+  const scenario = ((ai?.attack_scenario as string[] | undefined) ?? []);
   const impact = (ai?.mission_impact ?? {}) as Record<string, string>;
   const risk = (ai?.risk_assessment ?? {}) as Record<string, string>;
   const mit = (ai?.mitigation ?? {}) as Record<string, string[]>;
