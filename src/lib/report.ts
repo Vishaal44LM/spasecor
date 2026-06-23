@@ -20,10 +20,11 @@ export function buildIncidentReportSections(args: {
   resolutionNote?: string;
 }): Section[] {
   const { incident, asset, ai, mitigations, resolutionNote } = args;
-  const aiExec = ai?.executive_summary as string | undefined;
+  const aiExecRaw = ai ? (ai["executive_summary"] as unknown) : undefined;
+  const aiExec = typeof aiExecRaw === "string" ? aiExecRaw : undefined;
   const exec =
-    aiExec ??
-    incident.summary ??
+    aiExec ||
+    incident.summary ||
     `Incident ${incident.incident_number} (${incident.threat_category}) on asset ${asset?.name ?? "unknown"} at priority ${incident.priority}.`;
 
   const threat = (ai?.threat_analysis ?? {}) as Record<string, string>;
