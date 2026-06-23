@@ -53,7 +53,7 @@ function ActivityPage() {
                       </div>
                     </div>
                     <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                      <span>{(a.profiles as { name?: string } | null)?.name ?? "system"}</span>
+                      <span>{memberName(members, a.user_id)}</span>
                       {a.entity_type && <span>· {a.entity_type}</span>}
                       {incident?.incident_number && (
                         <>

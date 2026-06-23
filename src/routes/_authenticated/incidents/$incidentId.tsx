@@ -353,7 +353,7 @@ function IncidentDetail() {
                     <span className="absolute -left-[19px] mt-1.5 size-2.5 rounded-full bg-primary" />
                     <div className="text-sm font-medium">{a.action}</div>
                     <div className="text-xs text-muted-foreground">
-                      {(a.profiles as { name?: string } | null)?.name ?? "system"} ·{" "}
+                      {memberName(members, a.user_id)} ·{" "}
                       {formatDistanceToNow(new Date(a.created_at), { addSuffix: true })}
                     </div>
                   </li>
