@@ -91,9 +91,9 @@ Schema:
     }
     const json = await res.json();
     const content = json.choices?.[0]?.message?.content ?? "{}";
-    let payload: unknown;
+    let payload: Record<string, unknown>;
     try {
-      payload = JSON.parse(content);
+      payload = JSON.parse(content) as Record<string, unknown>;
     } catch {
       payload = { raw: content };
     }
@@ -118,5 +118,5 @@ Schema:
       entity_id: saved?.id,
     });
 
-    return { id: saved?.id, payload };
+    return { id: saved?.id ?? null, payload: JSON.stringify(payload) };
   });
