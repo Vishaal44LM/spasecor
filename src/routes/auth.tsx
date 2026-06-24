@@ -203,9 +203,7 @@ function AuthPage() {
           }}
         />
         <div className="relative flex h-full flex-col justify-between p-12 text-primary-foreground">
-          <div className="text-sm font-medium tracking-wide opacity-90">
-            SPASECOR · SPACE CYBER OPS
-          </div>
+          <div className="text-sm font-medium tracking-wide opacity-90">SPASECOR</div>
           <div>
             <blockquote className="text-2xl font-medium leading-snug">
               "We finally have a single source of truth for every cyber incident across our
