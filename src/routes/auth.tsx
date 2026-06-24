@@ -79,7 +79,7 @@ function AuthPage() {
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="flex flex-col justify-between p-8 lg:p-12">
         <Link to="/" className="inline-block">
-          <BrandWordmark />
+          <BrandWordmark size="lg" />
         </Link>
         <div className="mx-auto w-full max-w-md">
           <Tabs value={tab} onValueChange={(v) => setTab(v as "signin" | "signup")}>
