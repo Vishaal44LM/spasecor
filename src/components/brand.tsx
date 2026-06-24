@@ -4,18 +4,19 @@ import logo from "@/assets/spasecor-logo.png.asset.json";
 type Size = "sm" | "md" | "lg" | "xl";
 
 const SIZE_MAP: Record<Size, string> = {
-  sm: "size-8",
-  md: "size-10",
-  lg: "size-14",
-  xl: "size-20",
+  sm: "h-10 w-10",
+  md: "h-14 w-14",
+  lg: "h-24 w-24",
+  xl: "h-36 w-36",
 };
 
 const TEXT_MAP: Record<Size, string> = {
-  sm: "text-sm",
-  md: "text-base",
-  lg: "text-xl",
-  xl: "text-2xl",
+  sm: "text-base",
+  md: "text-lg",
+  lg: "text-3xl",
+  xl: "text-5xl",
 };
+
 
 export function BrandMark({
   className,
