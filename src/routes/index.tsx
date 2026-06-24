@@ -74,52 +74,6 @@ function Landing() {
             </div>
           </div>
 
-          <div className="relative mx-auto mt-16 max-w-5xl overflow-hidden rounded-2xl border bg-card shadow-2xl shadow-primary/10">
-            <div className="flex items-center gap-1.5 border-b bg-muted/40 px-4 py-2.5">
-              <span className="size-2.5 rounded-full bg-muted-foreground/30" />
-              <span className="size-2.5 rounded-full bg-muted-foreground/30" />
-              <span className="size-2.5 rounded-full bg-muted-foreground/30" />
-              <span className="ml-3 font-mono text-xs text-muted-foreground">
-                spasecor.app / incidents
-              </span>
-            </div>
-            <div className="grid gap-4 p-6 sm:grid-cols-4">
-              {[
-                { label: "Open", n: 12, tone: "bg-muted" },
-                { label: "Investigating", n: 5, tone: "bg-warning/15" },
-                { label: "Mitigation", n: 3, tone: "bg-primary/10" },
-                { label: "Critical", n: 2, tone: "bg-destructive/10" },
-              ].map((s) => (
-                <div key={s.label} className={`rounded-lg p-4 ${s.tone}`}>
-                  <div className="text-xs font-medium text-muted-foreground">{s.label}</div>
-                  <div className="mt-1 font-mono text-2xl font-semibold">{s.n}</div>
-                </div>
-              ))}
-            </div>
-            <div className="border-t p-6">
-              <div className="grid gap-2 font-mono text-xs">
-                {[
-                  ["INC-1042", "GPS Spoofing — Sat-NORDIC-3", "Investigating", "Critical"],
-                  ["INC-1041", "Ground Station Intrusion — GS-CASCADE", "Mitigation", "High"],
-                  ["INC-1038", "Telemetry Manipulation — PAYLOAD-X", "Resolved", "Medium"],
-                ].map(([id, title, status, prio]) => (
-                  <div
-                    key={id}
-                    className="grid grid-cols-[100px_1fr_auto_auto] items-center gap-4 rounded-md border bg-background px-3 py-2"
-                  >
-                    <span className="text-muted-foreground">{id}</span>
-                    <span className="truncate text-foreground">{title}</span>
-                    <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] text-foreground/80">
-                      {status}
-                    </span>
-                    <span className="rounded bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase text-primary">
-                      {prio}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
