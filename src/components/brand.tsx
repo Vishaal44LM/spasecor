@@ -4,19 +4,18 @@ import logo from "@/assets/spasecor-logo.png.asset.json";
 type Size = "sm" | "md" | "lg" | "xl";
 
 const SIZE_MAP: Record<Size, string> = {
-  sm: "h-10 w-10",
-  md: "h-14 w-14",
-  lg: "h-24 w-24",
-  xl: "h-36 w-36",
+  sm: "h-12 w-12",
+  md: "h-20 w-20",
+  lg: "h-40 w-40",
+  xl: "h-56 w-56",
 };
 
 const TEXT_MAP: Record<Size, string> = {
   sm: "text-base",
-  md: "text-lg",
-  lg: "text-3xl",
-  xl: "text-5xl",
+  md: "text-xl",
+  lg: "text-4xl",
+  xl: "text-6xl",
 };
-
 
 export function BrandMark({
   className,
@@ -43,7 +42,7 @@ export function BrandWordmark({
   className?: string;
 }) {
   return (
-    <div className={cn("flex flex-col items-center gap-1.5", className)}>
+    <div className={cn("flex flex-col items-center gap-2", className)}>
       <BrandMark size={size} />
       <div
         className={cn(
