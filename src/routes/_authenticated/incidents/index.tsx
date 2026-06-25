@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "@/lib/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useMemo } from "react";
@@ -23,12 +23,7 @@ import {
 } from "@/components/ui/table";
 import { INCIDENT_STAGES, STAGE_LABELS, PRIORITIES } from "@/lib/incident-constants";
 
-export const Route = createFileRoute("/_authenticated/incidents/")({
-  head: () => ({ meta: [{ title: "Incidents — Spasecor" }] }),
-  component: IncidentsList,
-});
-
-function IncidentsList() {
+export function IncidentsList() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string>("all");
   const [priority, setPriority] = useState<string>("all");

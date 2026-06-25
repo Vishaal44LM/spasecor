@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -10,14 +9,9 @@ import { format, startOfMonth, subMonths } from "date-fns";
 import { useMemo } from "react";
 import { STAGE_LABELS } from "@/lib/incident-constants";
 
-export const Route = createFileRoute("/_authenticated/analytics")({
-  head: () => ({ meta: [{ title: "Analytics — Spasecor" }] }),
-  component: Analytics,
-});
-
 const COLORS = ["#664EAE", "#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6", "#06B6D4"];
 
-function Analytics() {
+export function Analytics() {
   const { data: incidents } = useQuery({
     queryKey: ["analytics-incidents"],
     queryFn: async () => {

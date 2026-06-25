@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, usePathname } from "@/lib/navigation";
 import {
   LayoutDashboard,
   ShieldAlert,
@@ -39,7 +39,7 @@ const INSIGHTS = [
 const SETTINGS = [{ to: "/settings", label: "Settings", icon: Settings }];
 
 export function AppSidebar() {
-  const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const pathname = usePathname();
   const isActive = (to: string) => pathname === to || pathname.startsWith(to + "/");
 
   return (

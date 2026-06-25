@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import type { DragEvent } from "react";
+import { Link } from "@/lib/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { INCIDENT_STAGES, STAGE_LABELS } from "@/lib/incident-constants";
@@ -7,12 +8,7 @@ import { toast } from "sonner";
 import { useProfile } from "@/hooks/use-profile";
 import { logActivity } from "@/lib/activity";
 
-export const Route = createFileRoute("/_authenticated/board")({
-  head: () => ({ meta: [{ title: "Incident board — Spasecor" }] }),
-  component: Board,
-});
-
-function Board() {
+export function Board() {
   const qc = useQueryClient();
   const { data: profile } = useProfile();
   const { data: incidents } = useQuery({
@@ -26,7 +22,7 @@ function Board() {
     },
   });
 
-  async function onDrop(e: React.DragEvent, stage: string) {
+  async function onDrop(e: DragEvent, stage: string) {
     e.preventDefault();
     const id = e.dataTransfer.getData("text/plain");
     if (!id) return;

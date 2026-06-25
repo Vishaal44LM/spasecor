@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@/lib/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 import { DEFAULT_THREAT_CATEGORIES, PRIORITIES } from "@/lib/incident-constants";
@@ -20,12 +20,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { logActivity, notify } from "@/lib/activity";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
-export const Route = createFileRoute("/_authenticated/incidents/new")({
-  head: () => ({ meta: [{ title: "New incident — Spasecor" }] }),
-  component: NewIncident,
-});
-
-function NewIncident() {
+export function NewIncident() {
   const navigate = useNavigate();
   const { data: profile } = useProfile();
   const { data: assets } = useQuery({
@@ -50,7 +45,7 @@ function NewIncident() {
   });
   const [saving, setSaving] = useState(false);
 
-  async function save(e: React.FormEvent) {
+  async function save(e: FormEvent) {
     e.preventDefault();
     if (!profile?.organization_id) return;
     const category = form.threat_category === "__custom" ? form.custom_category : form.threat_category;
@@ -176,7 +171,7 @@ function NewIncident() {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="grid gap-1.5">
       <Label>{label}</Label>

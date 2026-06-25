@@ -1,10 +1,10 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useParams } from "@/lib/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ASSET_TYPES, ASSET_STATUSES } from "@/lib/incident-constants";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,13 +21,8 @@ import { useProfile } from "@/hooks/use-profile";
 import { logActivity } from "@/lib/activity";
 import { StatusBadge, PriorityBadge } from "@/components/status-badge";
 
-export const Route = createFileRoute("/_authenticated/assets/$assetId")({
-  head: () => ({ meta: [{ title: "Asset — Spasecor" }] }),
-  component: AssetDetail,
-});
-
-function AssetDetail() {
-  const { assetId } = Route.useParams();
+export function AssetDetail() {
+  const { assetId } = useParams<{ assetId: string }>();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { data: profile } = useProfile();
@@ -287,7 +282,7 @@ function Info({ label, value }: { label: string; value?: string | null }) {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="grid gap-1.5">
       <Label>{label}</Label>

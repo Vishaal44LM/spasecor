@@ -1,5 +1,10 @@
 {
-  "buildCommand": "NITRO_PRESET=vercel vite build",
-  "framework": null,
-  "installCommand": "npm install"
+  "buildCommand": "bun run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "installCommand": "bun install --frozen-lockfile",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
