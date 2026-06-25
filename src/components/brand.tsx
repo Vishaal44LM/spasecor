@@ -1,13 +1,12 @@
 import { cn } from "@/lib/utils";
-import logo from "@/assets/spasecor-logo.png.asset.json";
 
 type Size = "sm" | "md" | "lg" | "xl";
 
 const SIZE_MAP: Record<Size, string> = {
-  sm: "h-12 w-12",
-  md: "h-20 w-20",
-  lg: "h-40 w-40",
-  xl: "h-56 w-56",
+  sm: "h-10 w-10",
+  md: "h-14 w-14",
+  lg: "h-20 w-20",
+  xl: "h-28 w-28",
 };
 
 const TEXT_MAP: Record<Size, string> = {
@@ -26,7 +25,7 @@ export function BrandMark({
 }) {
   return (
     <img
-      src={logo.url}
+      src="/spasecor-logo.png"
       alt="Spasecor"
       className={cn(SIZE_MAP[size], "object-contain shrink-0", className)}
     />

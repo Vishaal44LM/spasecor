@@ -1,5 +1,5 @@
-import { createFileRoute, Outlet, redirect, Link, useRouter } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { Link, useNavigate } from "@/lib/navigation";
+import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
@@ -19,26 +19,14 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { GlobalSearch } from "@/components/global-search";
 
-export const Route = createFileRoute("/_authenticated")({
-  ssr: false,
-  beforeLoad: async ({ location }) => {
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) {
-      throw redirect({ to: "/auth", search: { redirect: location.href } });
-    }
-    return { user: data.user };
-  },
-  component: AuthedLayout,
-});
-
-function AuthedLayout() {
+export function AuthedLayout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset className="flex min-h-screen flex-col bg-background">
         <TopBar />
         <main className="flex-1">
-          <Outlet />
+          {children}
         </main>
       </SidebarInset>
     </SidebarProvider>
@@ -47,7 +35,7 @@ function AuthedLayout() {
 
 function TopBar() {
   const { data: profile } = useProfile();
-  const router = useRouter();
+  const navigate = useNavigate();
   const qc = useQueryClient();
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -55,7 +43,7 @@ function TopBar() {
     await qc.cancelQueries();
     qc.clear();
     await supabase.auth.signOut();
-    router.navigate({ to: "/auth", replace: true });
+    navigate({ to: "/auth", replace: true });
   }
 
   const initials = (profile?.name || profile?.email || "?")
@@ -70,6 +58,7 @@ function TopBar() {
     <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b bg-background/80 px-4 backdrop-blur">
       <SidebarTrigger />
       <button
+        data-search-trigger
         onClick={() => setSearchOpen(true)}
         className="hidden h-9 flex-1 max-w-xl items-center gap-2 rounded-md border bg-muted/40 px-3 text-sm text-muted-foreground hover:bg-muted md:flex"
       >

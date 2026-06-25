@@ -1,5 +1,5 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useNavigate } from "@/lib/navigation";
+import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,12 +7,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { BrandWordmark } from "@/components/brand";
 
-export const Route = createFileRoute("/reset-password")({
-  head: () => ({ meta: [{ title: "Reset password — Spasecor" }] }),
-  component: ResetPasswordPage,
-});
-
-function ResetPasswordPage() {
+export function ResetPasswordPage() {
   const navigate = useNavigate();
   const [pw, setPw] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,10 +16,18 @@ function ResetPasswordPage() {
   useEffect(() => {
     // Supabase places #access_token in the URL hash after recovery click.
     const hash = typeof window !== "undefined" ? window.location.hash : "";
+    const params = new URLSearchParams(hash.replace(/^#/, ""));
+    const accessToken = params.get("access_token");
+    const refreshToken = params.get("refresh_token");
     setReady(hash.includes("type=recovery") || hash.includes("access_token"));
+    if (accessToken && refreshToken) {
+      supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).then(({ error }) => {
+        if (error) toast.error(error.message);
+      });
+    }
   }, []);
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
     if (pw.length < 8) return toast.error("Password must be at least 8 characters");
     setLoading(true);

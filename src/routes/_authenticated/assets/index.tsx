@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@/lib/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/use-profile";
@@ -23,9 +23,9 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ASSET_TYPES, ASSET_STATUSES } from "@/lib/incident-constants";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
-import { PlusCircle, Satellite, Archive, ArchiveRestore } from "lucide-react";
+import { PlusCircle, Satellite } from "lucide-react";
 import { logActivity } from "@/lib/activity";
 import {
   Table,
@@ -36,12 +36,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export const Route = createFileRoute("/_authenticated/assets/")({
-  head: () => ({ meta: [{ title: "Space assets — Spasecor" }] }),
-  component: AssetsList,
-});
-
-function AssetsList() {
+export function AssetsList() {
   const [showArchived, setShowArchived] = useState(false);
   const { data } = useQuery({
     queryKey: ["assets", showArchived],
@@ -147,7 +142,7 @@ function NewAssetDialog() {
     description: "",
   });
 
-  async function save(e: React.FormEvent) {
+  async function save(e: FormEvent) {
     e.preventDefault();
     if (!profile?.organization_id) return;
     const { data, error } = await supabase

@@ -1,6 +1,5 @@
-import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@/lib/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
@@ -43,13 +42,8 @@ import { buildIncidentReportSections, downloadIncidentPdf } from "@/lib/report";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
-export const Route = createFileRoute("/_authenticated/incidents/$incidentId")({
-  head: () => ({ meta: [{ title: "Incident — Spasecor" }] }),
-  component: IncidentDetail,
-});
-
-function IncidentDetail() {
-  const { incidentId } = Route.useParams();
+export function IncidentDetail() {
+  const { incidentId } = useParams<{ incidentId: string }>();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { data: profile } = useProfile();
@@ -680,13 +674,12 @@ function AISection({
   analyses: { id: string; payload: unknown; created_at: string }[];
 }) {
   const qc = useQueryClient();
-  const run = useServerFn(analyzeIncident);
   const [loading, setLoading] = useState(false);
 
   async function analyze() {
     setLoading(true);
     try {
-      await run({ data: { incidentId } });
+      await analyzeIncident({ incidentId });
       toast.success("AI analysis complete");
       qc.invalidateQueries({ queryKey: ["ai-analyses", incidentId] });
       qc.invalidateQueries({ queryKey: ["activity", incidentId] });

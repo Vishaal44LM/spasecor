@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "@/lib/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/use-profile";
@@ -35,12 +35,7 @@ import {
 } from "recharts";
 import { format, subDays, startOfDay } from "date-fns";
 
-export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Spasecor" }] }),
-  component: Dashboard,
-});
-
-function Dashboard() {
+export function Dashboard() {
   const { data: profile } = useProfile();
 
   const { data: incidents } = useQuery({

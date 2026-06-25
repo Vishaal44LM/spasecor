@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import { BrandWordmark } from "@/components/brand";
 import {
@@ -12,21 +12,7 @@ import {
   Activity,
 } from "lucide-react";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Spasecor — Space Cyber Incident Management Platform" },
-      {
-        name: "description",
-        content:
-          "Enterprise incident management for satellite operators, mission control and aerospace cyber teams. Track, investigate, mitigate and resolve space cyber incidents end-to-end.",
-      },
-    ],
-  }),
-  component: Landing,
-});
-
-function Landing() {
+export function Landing() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b">

@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,12 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
-export const Route = createFileRoute("/_authenticated/settings")({
-  head: () => ({ meta: [{ title: "Settings — Spasecor" }] }),
-  component: Settings,
-});
-
-function Settings() {
+export function Settings() {
   const { data: profile } = useProfile();
   const qc = useQueryClient();
   const [name, setName] = useState("");
