@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,15 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { BrandWordmark } from "@/components/brand";
 import { toast } from "sonner";
-import { Loader2, MailCheck } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Link, useNavigate, useSearch } from "@/lib/navigation";
 
 export function AuthPage() {
-  const { mode, redirect, confirmed } = useSearch();
+  const { mode, redirect } = useSearch();
   const navigate = useNavigate();
   const [tab, setTab] = useState<"signin" | "signup">(mode === "signup" ? "signup" : "signin");
   const [loading, setLoading] = useState(false);
-  const [confirmEmail, setConfirmEmail] = useState("");
 
   const [signInEmail, setSignInEmail] = useState("");
   const [signInPw, setSignInPw] = useState("");
@@ -23,37 +22,6 @@ export function AuthPage() {
   const [org, setOrg] = useState("");
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPw, setSignUpPw] = useState("");
-
-  useEffect(() => {
-    if (confirmed === "1") toast.success("Email confirmed. You can sign in now.");
-  }, [confirmed]);
-
-  useEffect(() => {
-    const code = new URLSearchParams(window.location.search).get("code");
-    const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-    const accessToken = hash.get("access_token");
-    const refreshToken = hash.get("refresh_token");
-
-    if (accessToken && refreshToken) {
-      supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).then(({ error }) => {
-        if (error) toast.error(error.message);
-        else {
-          toast.success("Email confirmed. Welcome to Spasecor.");
-          navigate({ to: "/dashboard", replace: true });
-        }
-      });
-      return;
-    }
-
-    if (!code) return;
-    supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-      if (error) toast.error(error.message);
-      else {
-        toast.success("Email confirmed. Welcome to Spasecor.");
-        navigate({ to: "/dashboard", replace: true });
-      }
-    });
-  }, [navigate]);
 
   async function handleSignIn(e: FormEvent) {
     e.preventDefault();
@@ -65,12 +33,8 @@ export function AuthPage() {
     setLoading(false);
     if (error) {
       const message = error.message.toLowerCase();
-      if (message.includes("email not confirmed")) {
-        setConfirmEmail(signInEmail);
-        return toast.error("Please confirm your email before signing in. You can resend the confirmation email below.");
-      }
       if (message.includes("failed to fetch") || message.includes("load failed")) {
-        return toast.error("Authentication failed to load. Verify your Vercel Supabase environment variables and try again.");
+        return toast.error("Authentication failed to load. Check your connection and try again.");
       }
       return toast.error(error.message);
     }
@@ -86,38 +50,27 @@ export function AuthPage() {
       email: signUpEmail,
       password: signUpPw,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth?confirmed=1`,
         data: { name, organization: org },
       },
     });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    if (data.session) {
-      toast.success("Account created");
-      return navigate({ to: "/dashboard" });
-    }
-    setConfirmEmail(signUpEmail);
-    setSignInEmail(signUpEmail);
-    setTab("signin");
-    toast.success("Account created. Confirm your email, then sign in.");
-  }
-
-  async function resendConfirmation(email = confirmEmail || signInEmail || signUpEmail) {
-    if (!email) return toast.error("Enter your email first");
-    setLoading(true);
-    const { error } = await supabase.auth.resend({
-      type: "signup",
-      email,
-      options: { emailRedirectTo: `${window.location.origin}/auth?confirmed=1` },
-    });
-    setLoading(false);
     if (error) {
-      if (error.message.toLowerCase().includes("security purposes")) {
-        return toast.error("A confirmation email was sent recently. Please wait before resending.");
-      }
+      setLoading(false);
       return toast.error(error.message);
     }
-    toast.success("Confirmation email sent");
+    if (!data.session) {
+      // auto-confirm on; sign in immediately if session was not returned
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: signUpEmail,
+        password: signUpPw,
+      });
+      if (signInError) {
+        setLoading(false);
+        return toast.error(signInError.message);
+      }
+    }
+    setLoading(false);
+    toast.success("Account created");
+    navigate({ to: "/dashboard" });
   }
 
   async function handleForgot() {
@@ -133,7 +86,7 @@ export function AuthPage() {
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="flex flex-col justify-between p-8 lg:p-12">
         <Link to="/" className="inline-block">
-          <BrandWordmark size="lg" />
+          <BrandWordmark size="md" />
         </Link>
         <div className="mx-auto w-full max-w-md">
           <Tabs value={tab} onValueChange={(v) => setTab(v as "signin" | "signup")}>
@@ -182,28 +135,6 @@ export function AuthPage() {
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading && <Loader2 className="mr-2 size-4 animate-spin" />}Sign in
                 </Button>
-                {confirmEmail && (
-                  <div className="rounded-lg border bg-primary/5 p-3 text-sm">
-                    <div className="flex items-start gap-2">
-                      <MailCheck className="mt-0.5 size-4 text-primary" />
-                      <div>
-                        <p className="font-medium">Email confirmation required</p>
-                        <p className="text-muted-foreground">
-                          Confirm {confirmEmail} from your inbox before signing in.
-                        </p>
-                        <Button
-                          type="button"
-                          variant="link"
-                          className="h-auto p-0 text-primary"
-                          onClick={() => resendConfirmation(confirmEmail)}
-                          disabled={loading}
-                        >
-                          Resend confirmation email
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </form>
             </TabsContent>
 
