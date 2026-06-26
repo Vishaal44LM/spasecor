@@ -46,7 +46,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b px-3 py-3">
         <Link to="/dashboard">
-          <BrandWordmark />
+          <BrandWordmark size="sm" />
         </Link>
       </SidebarHeader>
       <SidebarContent>

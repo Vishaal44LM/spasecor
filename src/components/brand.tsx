@@ -2,18 +2,18 @@ import { cn } from "@/lib/utils";
 
 type Size = "sm" | "md" | "lg" | "xl";
 
-const SIZE_MAP: Record<Size, string> = {
-  sm: "h-10 w-10",
-  md: "h-14 w-14",
-  lg: "h-20 w-20",
-  xl: "h-28 w-28",
+const MARK_SIZE: Record<Size, string> = {
+  sm: "h-6 w-6",
+  md: "h-8 w-8",
+  lg: "h-10 w-10",
+  xl: "h-14 w-14",
 };
 
-const TEXT_MAP: Record<Size, string> = {
-  sm: "text-base",
-  md: "text-xl",
-  lg: "text-4xl",
-  xl: "text-6xl",
+const TEXT_SIZE: Record<Size, string> = {
+  sm: "text-sm",
+  md: "text-base",
+  lg: "text-xl",
+  xl: "text-3xl",
 };
 
 export function BrandMark({
@@ -27,7 +27,7 @@ export function BrandMark({
     <img
       src="/spasecor-logo.png"
       alt="Spasecor"
-      className={cn(SIZE_MAP[size], "object-contain shrink-0", className)}
+      className={cn(MARK_SIZE[size], "object-contain shrink-0", className)}
     />
   );
 }
@@ -35,22 +35,28 @@ export function BrandMark({
 export function BrandWordmark({
   size = "md",
   className,
+  orientation = "horizontal",
 }: {
-  subtle?: boolean;
   size?: Size;
   className?: string;
+  orientation?: "horizontal" | "vertical";
 }) {
-  return (
-    <div className={cn("flex flex-col items-center gap-2", className)}>
-      <BrandMark size={size} />
-      <div
-        className={cn(
-          "font-semibold tracking-tight leading-none",
-          TEXT_MAP[size],
-        )}
-      >
-        Spasecor
+  if (orientation === "vertical") {
+    return (
+      <div className={cn("flex flex-col items-center gap-2", className)}>
+        <BrandMark size={size} />
+        <div className={cn("font-semibold tracking-tight leading-none", TEXT_SIZE[size])}>
+          Spasecor
+        </div>
       </div>
+    );
+  }
+  return (
+    <div className={cn("flex items-center gap-2", className)}>
+      <BrandMark size={size} />
+      <span className={cn("font-semibold tracking-tight leading-none", TEXT_SIZE[size])}>
+        Spasecor
+      </span>
     </div>
   );
 }
