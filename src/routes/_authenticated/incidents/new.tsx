@@ -120,11 +120,31 @@ export function NewIncident() {
             <div className="grid grid-cols-2 gap-3">
               <Field label="Linked asset">
                 <Select value={form.asset_id} onValueChange={(v) => setForm({ ...form, asset_id: v })}>
-                  <SelectTrigger><SelectValue placeholder="Select asset" /></SelectTrigger>
-                  <SelectContent>
-                    {(assets ?? []).map((a) => (
-                      <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
-                    ))}
+                  <SelectTrigger><SelectValue placeholder={(assets?.length ?? 0) === 0 ? "No assets — add one first" : "Select asset"} /></SelectTrigger>
+                  <SelectContent className="z-[100] max-h-72 w-[var(--radix-select-trigger-width)] min-w-[12rem]">
+                    {(assets ?? []).length === 0 ? (
+                      <div className="px-3 py-6 text-center text-xs text-muted-foreground">
+                        No assets yet.{" "}
+                        <button
+                          type="button"
+                          className="text-primary underline"
+                          onClick={() => navigate({ to: "/assets" })}
+                        >
+                          Create one
+                        </button>
+                      </div>
+                    ) : (
+                      (assets ?? []).map((a) => (
+                        <SelectItem key={a.id} value={a.id}>
+                          <span className="flex items-center gap-2">
+                            <span>{a.name}</span>
+                            <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                              {a.asset_type}
+                            </span>
+                          </span>
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
               </Field>

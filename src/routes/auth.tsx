@@ -206,29 +206,46 @@ export function AuthPage() {
           className="absolute inset-0 opacity-30"
           style={{
             backgroundImage:
-              "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.4) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(255,255,255,0.3) 0%, transparent 50%)",
+              "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.45) 0%, transparent 45%), radial-gradient(circle at 80% 75%, rgba(255,255,255,0.3) 0%, transparent 55%)",
+          }}
+        />
+        <div
+          className="absolute inset-0 opacity-[0.12]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+            backgroundSize: "44px 44px",
           }}
         />
         <div className="relative flex h-full flex-col justify-between p-12 text-primary-foreground">
-          <div className="text-sm font-medium tracking-wide opacity-90">SPASECOR</div>
-          <div>
-            <blockquote className="text-2xl font-medium leading-snug">
-              "We finally have a single source of truth for every cyber incident across our
-              constellation — from initial detection to post-mission review."
-            </blockquote>
-            <div className="mt-6 text-sm opacity-80">
-              Director of Mission Security — global satellite operator
-            </div>
+          <div className="flex items-center gap-2 text-sm font-medium tracking-[0.2em] opacity-90">
+            <span className="size-1.5 rounded-full bg-primary-foreground" />
+            SPASECOR
           </div>
-          <div className="grid grid-cols-3 gap-4 text-xs">
+          <div className="space-y-6">
+            <div className="inline-flex items-center rounded-full border border-primary-foreground/25 bg-primary-foreground/10 px-3 py-1 text-xs font-medium backdrop-blur">
+              Space Cyber Incident Management
+            </div>
+            <blockquote className="text-3xl font-semibold leading-tight tracking-tight">
+              One source of truth for every cyber incident across your constellation.
+            </blockquote>
+            <p className="max-w-md text-sm leading-relaxed opacity-80">
+              Triage, investigate, and resolve threats to satellites and ground systems with a
+              workflow built for mission security teams.
+            </p>
+          </div>
+          <div className="grid max-w-md grid-cols-1 gap-3 text-sm">
             {[
-              ["238", "Active satellites tracked"],
-              ["1.2k", "Incidents resolved"],
-              ["14m", "Avg time to mitigate"],
-            ].map(([n, l]) => (
-              <div key={l} className="rounded-lg bg-white/10 p-3 backdrop-blur">
-                <div className="font-mono text-2xl font-semibold">{n}</div>
-                <div className="mt-1 opacity-80">{l}</div>
+              ["Incident workflow", "Six-stage board from detection to closure"],
+              ["AI investigation", "Threat analysis and mitigation guidance"],
+              ["Evidence & reports", "Secure storage and audit-ready exports"],
+            ].map(([t, d]) => (
+              <div
+                key={t}
+                className="rounded-lg border border-primary-foreground/15 bg-primary-foreground/5 p-3 backdrop-blur"
+              >
+                <div className="font-medium">{t}</div>
+                <div className="mt-0.5 text-xs opacity-75">{d}</div>
               </div>
             ))}
           </div>
