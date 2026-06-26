@@ -16,8 +16,8 @@ export function Landing() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <BrandWordmark size="lg" />
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
+          <BrandWordmark size="sm" />
           <div className="flex items-center gap-2">
             <Button asChild variant="ghost" size="sm">
               <Link to="/auth">Sign in</Link>
