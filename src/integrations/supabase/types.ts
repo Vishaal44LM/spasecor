@@ -65,6 +65,138 @@ export type Database = {
           },
         ]
       }
+      decision_chat_links: {
+        Row: {
+          created_at: string
+          decision_id: string
+          message_id: string
+        }
+        Insert: {
+          created_at?: string
+          decision_id: string
+          message_id: string
+        }
+        Update: {
+          created_at?: string
+          decision_id?: string
+          message_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decision_chat_links_decision_id_fkey"
+            columns: ["decision_id"]
+            isOneToOne: false
+            referencedRelation: "decisions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "decision_chat_links_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "mission_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      decision_evidence_links: {
+        Row: {
+          created_at: string
+          decision_id: string
+          evidence_id: string
+        }
+        Insert: {
+          created_at?: string
+          decision_id: string
+          evidence_id: string
+        }
+        Update: {
+          created_at?: string
+          decision_id?: string
+          evidence_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decision_evidence_links_decision_id_fkey"
+            columns: ["decision_id"]
+            isOneToOne: false
+            referencedRelation: "decisions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "decision_evidence_links_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "incident_evidence"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      decisions: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          category: string
+          created_at: string
+          decision_maker_id: string | null
+          description: string
+          id: string
+          incident_id: string | null
+          locked: boolean
+          organization_id: string
+          status: string
+          team: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          category: string
+          created_at?: string
+          decision_maker_id?: string | null
+          description: string
+          id?: string
+          incident_id?: string | null
+          locked?: boolean
+          organization_id: string
+          status?: string
+          team?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          category?: string
+          created_at?: string
+          decision_maker_id?: string | null
+          description?: string
+          id?: string
+          incident_id?: string | null
+          locked?: boolean
+          organization_id?: string
+          status?: string
+          team?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decisions_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "incidents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "decisions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       incident_ai_analyses: {
         Row: {
           created_at: string
@@ -154,7 +286,9 @@ export type Database = {
       }
       incident_evidence: {
         Row: {
+          category: string | null
           created_at: string
+          description: string | null
           file_name: string
           file_path: string
           file_size: number | null
@@ -162,10 +296,17 @@ export type Database = {
           incident_id: string
           mime_type: string | null
           organization_id: string
+          parent_id: string | null
+          sha256: string | null
+          source: string | null
+          tags: string[]
           uploaded_by: string | null
+          version: number
         }
         Insert: {
+          category?: string | null
           created_at?: string
+          description?: string | null
           file_name: string
           file_path: string
           file_size?: number | null
@@ -173,10 +314,17 @@ export type Database = {
           incident_id: string
           mime_type?: string | null
           organization_id: string
+          parent_id?: string | null
+          sha256?: string | null
+          source?: string | null
+          tags?: string[]
           uploaded_by?: string | null
+          version?: number
         }
         Update: {
+          category?: string | null
           created_at?: string
+          description?: string | null
           file_name?: string
           file_path?: string
           file_size?: number | null
@@ -184,7 +332,12 @@ export type Database = {
           incident_id?: string
           mime_type?: string | null
           organization_id?: string
+          parent_id?: string | null
+          sha256?: string | null
+          source?: string | null
+          tags?: string[]
           uploaded_by?: string | null
+          version?: number
         }
         Relationships: [
           {
@@ -199,6 +352,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incident_evidence_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "incident_evidence"
             referencedColumns: ["id"]
           },
         ]
@@ -355,6 +515,207 @@ export type Database = {
           },
           {
             foreignKeyName: "incidents_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      message_reads: {
+        Row: {
+          message_id: string
+          read_at: string
+          user_id: string
+        }
+        Insert: {
+          message_id: string
+          read_at?: string
+          user_id: string
+        }
+        Update: {
+          message_id?: string
+          read_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_reads_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "mission_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mission_messages: {
+        Row: {
+          body: string
+          created_at: string
+          edited_at: string | null
+          id: string
+          incident_id: string
+          organization_id: string
+          parent_id: string | null
+          pinned: boolean
+          reactions: Json
+          user_id: string | null
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          incident_id: string
+          organization_id: string
+          parent_id?: string | null
+          pinned?: boolean
+          reactions?: Json
+          user_id?: string | null
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          edited_at?: string | null
+          id?: string
+          incident_id?: string
+          organization_id?: string
+          parent_id?: string | null
+          pinned?: boolean
+          reactions?: Json
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mission_messages_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "incidents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mission_messages_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mission_messages_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "mission_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mission_notes: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          incident_id: string
+          organization_id: string
+          pinned: boolean
+          title: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          incident_id: string
+          organization_id: string
+          pinned?: boolean
+          title?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          incident_id?: string
+          organization_id?: string
+          pinned?: boolean
+          title?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mission_notes_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "incidents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mission_notes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mission_tasks: {
+        Row: {
+          assignee_id: string | null
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          incident_id: string
+          organization_id: string
+          priority: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assignee_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          incident_id: string
+          organization_id: string
+          priority?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assignee_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          incident_id?: string
+          organization_id?: string
+          priority?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mission_tasks_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "incidents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mission_tasks_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
