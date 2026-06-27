@@ -249,12 +249,14 @@ export function IncidentDetail() {
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Tabs defaultValue="overview">
-            <TabsList>
+            <TabsList className="flex-wrap h-auto">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="evidence">Evidence ({evidence?.length ?? 0})</TabsTrigger>
               <TabsTrigger value="investigation">Investigation</TabsTrigger>
               <TabsTrigger value="ai">AI Analysis ({analyses?.length ?? 0})</TabsTrigger>
               <TabsTrigger value="reports">Reports ({reports?.length ?? 0})</TabsTrigger>
+              <TabsTrigger value="vault">Vault</TabsTrigger>
+              <TabsTrigger value="decisions">Decisions</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
@@ -319,6 +321,14 @@ export function IncidentDetail() {
                 reports={reports ?? []}
                 organizationId={profile?.organization_id}
               />
+            </TabsContent>
+
+            <TabsContent value="vault">
+              <EvidenceVault incidentId={incidentId} />
+            </TabsContent>
+
+            <TabsContent value="decisions">
+              <DecisionsPage incidentId={incidentId} />
             </TabsContent>
           </Tabs>
 
