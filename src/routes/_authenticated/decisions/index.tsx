@@ -227,7 +227,7 @@ function DecisionDialog({
   const [team, setTeam] = useState("");
   const [incident, setIncident] = useState<string>(defaultIncidentId ?? "");
 
-  useMemo(() => {
+  useEffect(() => {
     if (editing) {
       setTitle(editing.title); setDescription(editing.description);
       setCategory(editing.category); setTeam(editing.team ?? "");
