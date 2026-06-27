@@ -1,4 +1,8 @@
-import { useNavigate, useParams } from "@/lib/navigation";
+import { useNavigate, useParams, Link } from "@/lib/navigation";
+import { AISummaryButton } from "@/components/ai-summary-button";
+import { DecisionsPage } from "@/routes/_authenticated/decisions";
+import { EvidenceVault } from "@/routes/_authenticated/evidence";
+import { Users } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useRef } from "react";
@@ -183,10 +187,18 @@ export function IncidentDetail() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/incidents" })}>
           <ArrowLeft className="size-4" /> Back
         </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button asChild variant="outline" size="sm">
+            <Link to="/mission/$incidentId" params={{ incidentId }}>
+              <Users className="size-4" /> Mission Room
+            </Link>
+          </Button>
+          <AISummaryButton incidentId={incidentId} incidentNumber={incident.incident_number} />
+        </div>
       </div>
 
       <header className="rounded-2xl border bg-card p-6">
