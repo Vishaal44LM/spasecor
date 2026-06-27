@@ -8,6 +8,8 @@ import {
   Settings,
   KanbanSquare,
   PlusCircle,
+  Gavel,
+  Database,
 } from "lucide-react";
 import {
   Sidebar,
@@ -29,6 +31,11 @@ const PRIMARY = [
   { to: "/incidents", label: "Incidents", icon: ShieldAlert },
   { to: "/board", label: "Incident Board", icon: KanbanSquare },
   { to: "/assets", label: "Space Assets", icon: Satellite },
+];
+
+const KNOWLEDGE = [
+  { to: "/evidence", label: "Evidence Vault", icon: Database },
+  { to: "/decisions", label: "Decision Log", icon: Gavel },
 ];
 
 const INSIGHTS = [

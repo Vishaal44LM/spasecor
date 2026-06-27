@@ -18,12 +18,16 @@ import { AssetDetail } from "@/routes/_authenticated/assets/$assetId";
 import { Analytics } from "@/routes/_authenticated/analytics";
 import { ActivityPage } from "@/routes/_authenticated/activity";
 import { Settings } from "@/routes/_authenticated/settings";
+import { MissionRoom } from "@/routes/_authenticated/mission/$incidentId";
+import { DecisionsPage } from "@/routes/_authenticated/decisions";
+import { EvidenceVault } from "@/routes/_authenticated/evidence";
 
 type Match = {
   component: ComponentType;
   params?: Record<string, string>;
   protected?: boolean;
   title: string;
+  bare?: boolean;
 };
 
 const queryClient = new QueryClient();
@@ -33,12 +37,16 @@ const protectedRoutes: Array<{
   title: string;
   component: ComponentType;
   names?: string[];
+  bare?: boolean;
 }> = [
   { pattern: /^\/dashboard$/, title: "Dashboard — Spasecor", component: Dashboard },
   { pattern: /^\/board$/, title: "Incident board — Spasecor", component: Board },
   { pattern: /^\/incidents$/, title: "Incidents — Spasecor", component: IncidentsList },
   { pattern: /^\/incidents\/new$/, title: "New incident — Spasecor", component: NewIncident },
   { pattern: /^\/incidents\/([^/]+)$/, title: "Incident — Spasecor", component: IncidentDetail, names: ["incidentId"] },
+  { pattern: /^\/mission\/([^/]+)$/, title: "Mission Room — Spasecor", component: MissionRoom, names: ["incidentId"] },
+  { pattern: /^\/decisions$/, title: "Decisions — Spasecor", component: DecisionsPage },
+  { pattern: /^\/evidence$/, title: "Evidence Vault — Spasecor", component: EvidenceVault },
   { pattern: /^\/assets$/, title: "Space assets — Spasecor", component: AssetsList },
   { pattern: /^\/assets\/([^/]+)$/, title: "Asset — Spasecor", component: AssetDetail, names: ["assetId"] },
   { pattern: /^\/analytics$/, title: "Analytics — Spasecor", component: Analytics },
