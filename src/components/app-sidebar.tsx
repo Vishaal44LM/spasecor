@@ -84,6 +84,24 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
+          <SidebarGroupLabel>Knowledge</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {KNOWLEDGE.map((i) => (
+                <SidebarMenuItem key={i.to}>
+                  <SidebarMenuButton asChild isActive={isActive(i.to)}>
+                    <Link to={i.to}>
+                      <i.icon />
+                      <span>{i.label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
           <SidebarGroupLabel>Insights</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
