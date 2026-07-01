@@ -58,9 +58,10 @@ const protectedRoutes: Array<{
 
 function getCurrentMatch(): Match {
   const pathname = window.location.pathname.replace(/\/$/, "") || "/";
-  if (pathname === "/") return { component: Landing, title: "Spasecor — Space Cyber Incident Management Platform" };
-  if (pathname === "/auth") return { component: AuthPage, title: "Sign in — Spasecor" };
-  if (pathname === "/reset-password") return { component: ResetPasswordPage, title: "Reset password — Spasecor" };
+  if (pathname === "/") return { component: Landing, title: "Spasecor" };
+  if (pathname === "/auth") return { component: AuthPage, title: "Spasecor" };
+  if (pathname === "/invite") return { component: InvitePage, title: "Spasecor" };
+  if (pathname === "/reset-password") return { component: ResetPasswordPage, title: "Spasecor" };
 
   for (const route of protectedRoutes) {
     const match = pathname.match(route.pattern);
@@ -72,7 +73,7 @@ function getCurrentMatch(): Match {
     return { component: route.component, title: route.title, params, protected: true };
   }
 
-  return { component: NotFound, title: "Page not found — Spasecor" };
+  return { component: NotFound, title: "Spasecor" };
 }
 
 export default function App() {
