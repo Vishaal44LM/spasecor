@@ -148,6 +148,7 @@ export default function App() {
         <Toaster richColors position="top-right" />
       </RouterProvider>
     </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 
