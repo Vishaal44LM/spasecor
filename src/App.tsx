@@ -4,9 +4,11 @@ import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { RouterProvider, Link } from "@/lib/navigation";
+import { ThemeProvider } from "@/lib/theme";
 import { Landing } from "@/routes";
 import { AuthPage } from "@/routes/auth";
 import { ResetPasswordPage } from "@/routes/reset-password";
+import { InvitePage } from "@/routes/invite";
 import { AuthedLayout } from "@/routes/_authenticated/route";
 import { Dashboard } from "@/routes/_authenticated/dashboard";
 import { Board } from "@/routes/_authenticated/board";
@@ -39,26 +41,27 @@ const protectedRoutes: Array<{
   names?: string[];
   bare?: boolean;
 }> = [
-  { pattern: /^\/dashboard$/, title: "Dashboard — Spasecor", component: Dashboard },
-  { pattern: /^\/board$/, title: "Incident board — Spasecor", component: Board },
-  { pattern: /^\/incidents$/, title: "Incidents — Spasecor", component: IncidentsList },
-  { pattern: /^\/incidents\/new$/, title: "New incident — Spasecor", component: NewIncident },
-  { pattern: /^\/incidents\/([^/]+)$/, title: "Incident — Spasecor", component: IncidentDetail, names: ["incidentId"] },
-  { pattern: /^\/mission\/([^/]+)$/, title: "Mission Room — Spasecor", component: MissionRoom, names: ["incidentId"] },
-  { pattern: /^\/decisions$/, title: "Decisions — Spasecor", component: DecisionsPage },
-  { pattern: /^\/evidence$/, title: "Evidence Vault — Spasecor", component: EvidenceVault },
-  { pattern: /^\/assets$/, title: "Space assets — Spasecor", component: AssetsList },
-  { pattern: /^\/assets\/([^/]+)$/, title: "Asset — Spasecor", component: AssetDetail, names: ["assetId"] },
-  { pattern: /^\/analytics$/, title: "Analytics — Spasecor", component: Analytics },
-  { pattern: /^\/activity$/, title: "Activity & audit — Spasecor", component: ActivityPage },
-  { pattern: /^\/settings$/, title: "Settings — Spasecor", component: Settings },
+  { pattern: /^\/dashboard$/, title: "Spasecor", component: Dashboard },
+  { pattern: /^\/board$/, title: "Spasecor", component: Board },
+  { pattern: /^\/incidents$/, title: "Spasecor", component: IncidentsList },
+  { pattern: /^\/incidents\/new$/, title: "Spasecor", component: NewIncident },
+  { pattern: /^\/incidents\/([^/]+)$/, title: "Spasecor", component: IncidentDetail, names: ["incidentId"] },
+  { pattern: /^\/mission\/([^/]+)$/, title: "Spasecor", component: MissionRoom, names: ["incidentId"] },
+  { pattern: /^\/decisions$/, title: "Spasecor", component: DecisionsPage },
+  { pattern: /^\/evidence$/, title: "Spasecor", component: EvidenceVault },
+  { pattern: /^\/assets$/, title: "Spasecor", component: AssetsList },
+  { pattern: /^\/assets\/([^/]+)$/, title: "Spasecor", component: AssetDetail, names: ["assetId"] },
+  { pattern: /^\/analytics$/, title: "Spasecor", component: Analytics },
+  { pattern: /^\/activity$/, title: "Spasecor", component: ActivityPage },
+  { pattern: /^\/settings$/, title: "Spasecor", component: Settings },
 ];
 
 function getCurrentMatch(): Match {
   const pathname = window.location.pathname.replace(/\/$/, "") || "/";
-  if (pathname === "/") return { component: Landing, title: "Spasecor — Space Cyber Incident Management Platform" };
-  if (pathname === "/auth") return { component: AuthPage, title: "Sign in — Spasecor" };
-  if (pathname === "/reset-password") return { component: ResetPasswordPage, title: "Reset password — Spasecor" };
+  if (pathname === "/") return { component: Landing, title: "Spasecor" };
+  if (pathname === "/auth") return { component: AuthPage, title: "Spasecor" };
+  if (pathname === "/invite") return { component: InvitePage, title: "Spasecor" };
+  if (pathname === "/reset-password") return { component: ResetPasswordPage, title: "Spasecor" };
 
   for (const route of protectedRoutes) {
     const match = pathname.match(route.pattern);
@@ -70,7 +73,7 @@ function getCurrentMatch(): Match {
     return { component: route.component, title: route.title, params, protected: true };
   }
 
-  return { component: NotFound, title: "Page not found — Spasecor" };
+  return { component: NotFound, title: "Spasecor" };
 }
 
 export default function App() {
@@ -113,7 +116,7 @@ export default function App() {
   }, [locationKey]);
 
   useEffect(() => {
-    document.title = match.title;
+    document.title = "Spasecor";
   }, [match.title]);
 
   const Page = match.component;
@@ -126,6 +129,7 @@ export default function App() {
   }, [match.protected, sessionReady, signedIn]);
 
   return (
+    <ThemeProvider>
     <QueryClientProvider client={queryClient}>
       <RouterProvider params={match.params}>
         {match.protected ? (
@@ -144,6 +148,7 @@ export default function App() {
         <Toaster richColors position="top-right" />
       </RouterProvider>
     </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 

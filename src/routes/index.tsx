@@ -49,13 +49,13 @@ export function Landing() {
               investigation built in.
             </p>
             <div className="mt-9 flex flex-wrap justify-center gap-3">
-              <Button asChild size="lg">
-                <Link to="/auth" search={{ mode: "signup" }}>
-                  Start free <ArrowRight className="ml-2 size-4" />
-                </Link>
-              </Button>
               <Button asChild size="lg" variant="outline">
                 <Link to="/auth">Sign in</Link>
+              </Button>
+              <Button asChild size="lg">
+                <Link to="/auth" search={{ mode: "signup" }}>
+                  Create your organization <ArrowRight className="ml-2 size-4" />
+                </Link>
               </Button>
             </div>
           </div>

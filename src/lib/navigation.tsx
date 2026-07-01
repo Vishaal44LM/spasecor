@@ -97,6 +97,8 @@ export function useSearch() {
     mode: search.get("mode") ?? undefined,
     redirect: search.get("redirect") ?? undefined,
     confirmed: search.get("confirmed") ?? undefined,
+    token: search.get("token") ?? undefined,
+    invite: search.get("invite") ?? undefined,
   };
 }
 
