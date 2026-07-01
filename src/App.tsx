@@ -41,19 +41,19 @@ const protectedRoutes: Array<{
   names?: string[];
   bare?: boolean;
 }> = [
-  { pattern: /^\/dashboard$/, title: "Dashboard — Spasecor", component: Dashboard },
-  { pattern: /^\/board$/, title: "Incident board — Spasecor", component: Board },
-  { pattern: /^\/incidents$/, title: "Incidents — Spasecor", component: IncidentsList },
-  { pattern: /^\/incidents\/new$/, title: "New incident — Spasecor", component: NewIncident },
-  { pattern: /^\/incidents\/([^/]+)$/, title: "Incident — Spasecor", component: IncidentDetail, names: ["incidentId"] },
-  { pattern: /^\/mission\/([^/]+)$/, title: "Mission Room — Spasecor", component: MissionRoom, names: ["incidentId"] },
-  { pattern: /^\/decisions$/, title: "Decisions — Spasecor", component: DecisionsPage },
-  { pattern: /^\/evidence$/, title: "Evidence Vault — Spasecor", component: EvidenceVault },
-  { pattern: /^\/assets$/, title: "Space assets — Spasecor", component: AssetsList },
-  { pattern: /^\/assets\/([^/]+)$/, title: "Asset — Spasecor", component: AssetDetail, names: ["assetId"] },
-  { pattern: /^\/analytics$/, title: "Analytics — Spasecor", component: Analytics },
-  { pattern: /^\/activity$/, title: "Activity & audit — Spasecor", component: ActivityPage },
-  { pattern: /^\/settings$/, title: "Settings — Spasecor", component: Settings },
+  { pattern: /^\/dashboard$/, title: "Spasecor", component: Dashboard },
+  { pattern: /^\/board$/, title: "Spasecor", component: Board },
+  { pattern: /^\/incidents$/, title: "Spasecor", component: IncidentsList },
+  { pattern: /^\/incidents\/new$/, title: "Spasecor", component: NewIncident },
+  { pattern: /^\/incidents\/([^/]+)$/, title: "Spasecor", component: IncidentDetail, names: ["incidentId"] },
+  { pattern: /^\/mission\/([^/]+)$/, title: "Spasecor", component: MissionRoom, names: ["incidentId"] },
+  { pattern: /^\/decisions$/, title: "Spasecor", component: DecisionsPage },
+  { pattern: /^\/evidence$/, title: "Spasecor", component: EvidenceVault },
+  { pattern: /^\/assets$/, title: "Spasecor", component: AssetsList },
+  { pattern: /^\/assets\/([^/]+)$/, title: "Spasecor", component: AssetDetail, names: ["assetId"] },
+  { pattern: /^\/analytics$/, title: "Spasecor", component: Analytics },
+  { pattern: /^\/activity$/, title: "Spasecor", component: ActivityPage },
+  { pattern: /^\/settings$/, title: "Spasecor", component: Settings },
 ];
 
 function getCurrentMatch(): Match {
