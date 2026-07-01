@@ -10,7 +10,7 @@ import { Loader2 } from "lucide-react";
 import { Link, useNavigate, useSearch } from "@/lib/navigation";
 
 export function AuthPage() {
-  const { mode, redirect } = useSearch();
+  const { mode, redirect, token } = useSearch();
   const navigate = useNavigate();
   const [tab, setTab] = useState<"signin" | "signup">(mode === "signup" ? "signup" : "signin");
   const [loading, setLoading] = useState(false);
@@ -39,6 +39,10 @@ export function AuthPage() {
       return toast.error(error.message);
     }
     toast.success("Welcome back");
+    if (token) {
+      const { error: acceptErr } = await supabase.rpc("accept_invitation", { _token: token });
+      if (acceptErr) toast.error(acceptErr.message);
+    }
     navigate({ to: redirect || "/dashboard" });
   }
 
@@ -50,7 +54,7 @@ export function AuthPage() {
       email: signUpEmail,
       password: signUpPw,
       options: {
-        data: { name, organization: org },
+        data: { name, organization: org, invite_token: token ?? null },
       },
     });
     if (error) {
