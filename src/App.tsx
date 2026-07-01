@@ -129,6 +129,7 @@ export default function App() {
   }, [match.protected, sessionReady, signedIn]);
 
   return (
+    <ThemeProvider>
     <QueryClientProvider client={queryClient}>
       <RouterProvider params={match.params}>
         {match.protected ? (
