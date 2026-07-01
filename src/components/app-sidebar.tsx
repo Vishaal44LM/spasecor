@@ -50,7 +50,7 @@ export function AppSidebar() {
   const isActive = (to: string) => pathname === to || pathname.startsWith(to + "/");
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="offcanvas">
       <SidebarHeader className="border-b px-3 py-3">
         <Link to="/dashboard">
           <BrandWordmark size="sm" />
