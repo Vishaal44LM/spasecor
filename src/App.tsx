@@ -116,7 +116,7 @@ export default function App() {
   }, [locationKey]);
 
   useEffect(() => {
-    document.title = match.title;
+    document.title = "Spasecor";
   }, [match.title]);
 
   const Page = match.component;
