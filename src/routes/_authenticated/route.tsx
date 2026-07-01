@@ -18,6 +18,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { GlobalSearch } from "@/components/global-search";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function AuthedLayout({ children }: { children: ReactNode }) {
   return (
@@ -69,6 +70,7 @@ function TopBar() {
         </kbd>
       </button>
       <div className="ml-auto flex items-center gap-1">
+        <ThemeToggle />
         <NotificationsBell />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
