@@ -143,10 +143,10 @@ export function Landing() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 text-xs text-muted-foreground sm:flex-row">
           <div>© {new Date().getFullYear()} Spasecor · Space Cybersecurity Operations</div>
           <a
-            href="mailto:spasecor@gmail.com"
+            href="mailto:spasecor.in@gmail.com"
             className="inline-flex items-center gap-2 rounded-full border bg-card px-4 py-2 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary"
           >
-            Contact us — spasecor@gmail.com
+            Contact us — spasecor.in@gmail.com
           </a>
         </div>
       </footer>
