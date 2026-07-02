@@ -12,15 +12,15 @@ export type IncidentSummary = {
 
 export async function summarizeIncident(incidentId: string): Promise<IncidentSummary> {
   const { data: sessionData } = await supabase.auth.getSession();
-  const token = sessionData.session?.access_token;
-  if (!token) throw new Error("Please sign in before generating summary.");
+  if (!sessionData.session) throw new Error("Please sign in before generating summary.");
 
-  const res = await fetch("/api/summarize-incident", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ incidentId }),
+  const { data, error } = await supabase.functions.invoke("summarize-incident", {
+    body: { incidentId },
   });
-  const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(json.error ?? "Summary generation failed");
-  return json.summary as IncidentSummary;
+  if (error) {
+    const msg = (data as any)?.error || error.message || "Summary generation failed";
+    throw new Error(msg);
+  }
+  if ((data as any)?.error) throw new Error((data as any).error);
+  return (data as any).summary as IncidentSummary;
 }

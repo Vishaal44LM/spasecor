@@ -1,34 +1,29 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "npm:@supabase/supabase-js@2";
+import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
-const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-const SUPABASE_KEY =
-  process.env.SUPABASE_PUBLISHABLE_KEY ||
-  process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-  process.env.SUPABASE_ANON_KEY ||
-  process.env.VITE_SUPABASE_ANON_KEY;
-
-export default async function handler(req: any, res: any) {
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
     if (req.method !== "POST") {
-      res.setHeader("Allow", "POST");
-      return res.status(405).json({ error: "Method not allowed" });
+      return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-    if (!SUPABASE_URL || !SUPABASE_KEY) return res.status(500).json({ error: "Supabase not configured" });
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) return res.status(500).json({ error: "AI is not configured" });
-    const token = String(req.headers.authorization ?? "").replace(/^Bearer\s+/i, "");
-    if (!token) return res.status(401).json({ error: "Authentication required" });
+    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!apiKey) return new Response(JSON.stringify({ error: "AI is not configured" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const { incidentId } = typeof req.body === "string" ? JSON.parse(req.body) : req.body ?? {};
-    if (!incidentId) return res.status(400).json({ error: "incidentId required" });
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace(/^Bearer\s+/i, "");
+    if (!token) return new Response(JSON.stringify({ error: "Authentication required" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+    const { incidentId } = await req.json();
+    if (!incidentId) return new Response(JSON.stringify({ error: "incidentId required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? Deno.env.get("SUPABASE_ANON_KEY")!, {
       global: { headers: { Authorization: `Bearer ${token}` } },
       auth: { persistSession: false, autoRefreshToken: false },
     });
 
     const { data: userData, error: userError } = await supabase.auth.getUser(token);
-    if (userError || !userData.user) return res.status(401).json({ error: "Invalid session" });
+    if (userError || !userData.user) return new Response(JSON.stringify({ error: "Invalid session" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
     const [incidentRes, commentsRes, evidenceRes, activityRes, stageRes, messagesRes, notesRes, tasksRes] = await Promise.all([
       supabase.from("incidents").select("*, space_assets(name, asset_type, mission_name, orbit_type)").eq("id", incidentId).single(),
@@ -41,12 +36,12 @@ export default async function handler(req: any, res: any) {
       supabase.from("mission_tasks").select("title, status, priority, due_date, completed_at").eq("incident_id", incidentId).order("created_at"),
     ]);
 
-    const incident = incidentRes.data;
-    if (!incident) return res.status(404).json({ error: "Incident not found" });
-    const asset = incident.space_assets as any;
+    const incident: any = incidentRes.data;
+    if (!incident) return new Response(JSON.stringify({ error: "Incident not found" }), { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const asset = incident.space_assets;
 
     const sys = `You are an analyst writing summaries for the Spasecor space cybersecurity platform.
-RULES (must follow strictly):
+RULES:
 - Summarize only the verified information provided.
 - Never recommend mitigation, predict attacks, change status, invent or guess information.
 - Be concise, factual and professional. If a section has no data, write "No data available."
@@ -85,13 +80,13 @@ ${(activityRes.data ?? []).map((a: any) => `[${a.created_at}] ${a.action}`).join
 
 Schema:
 {
-  "executive": "string - 2-4 sentences: incident, severity, status, mission impact, duration",
-  "timeline": "string - chronological bullet list with timestamps",
-  "investigation": "string - root cause, evidence, findings, systems affected",
-  "collaboration": "string - key decisions, agreements, findings from chat/discussion",
-  "documents": "string - summary of uploaded reports/evidence",
-  "tasks": "string - completed tasks, pending tasks, assignees",
-  "closure": "string - executive-quality closure summary, or 'Incident not yet closed.'"
+  "executive": "2-4 sentences: incident, severity, status, mission impact, duration",
+  "timeline": "chronological bullet list with timestamps",
+  "investigation": "root cause, evidence, findings, systems affected",
+  "collaboration": "key decisions, agreements, findings from chat/discussion",
+  "documents": "summary of uploaded reports/evidence",
+  "tasks": "completed tasks, pending tasks, assignees",
+  "closure": "executive-quality closure summary, or 'Incident not yet closed.'"
 }`;
 
     const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -106,18 +101,15 @@ Schema:
 
     if (!aiRes.ok) {
       const t = await aiRes.text();
-      if (aiRes.status === 429) return res.status(429).json({ error: "AI rate limit reached. Try again shortly." });
-      if (aiRes.status === 402) return res.status(402).json({ error: "AI credits exhausted. Add credits to continue." });
-      return res.status(502).json({ error: `AI error: ${t}` });
+      if (aiRes.status === 429) return new Response(JSON.stringify({ error: "AI rate limit reached. Try again shortly." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (aiRes.status === 402) return new Response(JSON.stringify({ error: "AI credits exhausted. Add credits to continue." }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ error: `AI error: ${t}` }), { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
     const json = await aiRes.json();
     const content = json.choices?.[0]?.message?.content ?? "{}";
     let summary: Record<string, string>;
-    try {
-      summary = JSON.parse(content);
-    } catch {
-      summary = { executive: content, timeline: "", investigation: "", collaboration: "", documents: "", tasks: "", closure: "" };
-    }
+    try { summary = JSON.parse(content); }
+    catch { summary = { executive: content, timeline: "", investigation: "", collaboration: "", documents: "", tasks: "", closure: "" }; }
 
     await supabase.from("activity_log").insert({
       organization_id: incident.organization_id,
@@ -127,8 +119,8 @@ Schema:
       entity_type: "ai_summary",
     } as never);
 
-    return res.status(200).json({ summary });
+    return new Response(JSON.stringify({ summary }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
-    return res.status(500).json({ error: e instanceof Error ? e.message : "Unexpected error" });
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unexpected error" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
-}
+});
