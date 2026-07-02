@@ -37,7 +37,7 @@ export function Landing() {
           <div className="mx-auto max-w-3xl text-center">
             <div className="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">
               <span className="size-1.5 rounded-full bg-success" />
-              Mission-critical incident operations
+              Mission critical incident operations
             </div>
             <h1 className="mt-6 text-4xl font-semibold tracking-tight text-foreground sm:text-6xl">
               Space cyber incident management,{" "}
@@ -84,7 +84,7 @@ export function Landing() {
               {
                 icon: Workflow,
                 title: "Structured Workflow",
-                desc: "Open → Assigned → Investigating → Mitigation → Resolved → Closed. Full stage history with time-in-state.",
+                desc: "Open → Assigned → Investigating → Mitigation → Resolved → Closed. Full stage history with time in state.",
               },
               {
                 icon: Sparkles,
