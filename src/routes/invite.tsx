@@ -35,11 +35,11 @@ export function InvitePage() {
       const { data: u } = await supabase.auth.getUser();
 
       if (u.user) {
-        // Already signed in — accept the invite and go to dashboard
+        // If signed in with a different account, sign out and route to signup
         if (u.user.email && u.user.email.toLowerCase() !== data.email.toLowerCase()) {
-          setError(
-            `This invitation is for ${data.email}. Sign out and sign in with that email to accept.`,
-          );
+          setStatus("Signing out to accept invitation…");
+          await supabase.auth.signOut();
+          navigate({ to: "/auth", search: { mode: "signup", token } });
           return;
         }
         setStatus("Joining organization…");
