@@ -1,13 +1,33 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { BrandWordmark } from "@/components/brand";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Link, useNavigate, useSearch } from "@/lib/navigation";
+import type { AppRole } from "@/hooks/use-role";
+
+const ROLES: { value: AppRole; label: string }[] = [
+  { value: "admin", label: "Administrator" },
+  { value: "mission_manager", label: "Mission Manager" },
+  { value: "security_analyst", label: "Security Analyst" },
+  { value: "satellite_engineer", label: "Satellite Engineer" },
+  { value: "viewer", label: "Viewer" },
+];
+
+function roleLabel(r: AppRole | string) {
+  return ROLES.find((x) => x.value === r)?.label ?? String(r).replace(/_/g, " ");
+}
 
 export function AuthPage() {
   const { mode, redirect, token } = useSearch();
@@ -22,6 +42,43 @@ export function AuthPage() {
   const [org, setOrg] = useState("");
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPw, setSignUpPw] = useState("");
+  const [role, setRole] = useState<AppRole>("admin");
+
+  // Invitation prefill
+  const [inviteLoading, setInviteLoading] = useState(!!token);
+  const [invitePrefilled, setInvitePrefilled] = useState(false);
+  const [inviteError, setInviteError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!token) return;
+    let mounted = true;
+    (async () => {
+      const { data, error } = await supabase
+        .from("organization_invitations")
+        .select("email, role, expires_at, accepted_at, organizations(name)")
+        .eq("token", token)
+        .maybeSingle();
+      if (!mounted) return;
+      if (error || !data) {
+        setInviteError("This invitation link is invalid.");
+      } else if (data.accepted_at) {
+        setInviteError("This invitation has already been accepted.");
+      } else if (new Date(data.expires_at) < new Date()) {
+        setInviteError("This invitation has expired.");
+      } else {
+        setTab("signup");
+        setSignUpEmail(data.email);
+        setSignInEmail(data.email);
+        setOrg((data.organizations as { name?: string } | null)?.name ?? "");
+        setRole(data.role as AppRole);
+        setInvitePrefilled(true);
+      }
+      setInviteLoading(false);
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [token]);
 
   async function handleSignIn(e: FormEvent) {
     e.preventDefault();
@@ -62,7 +119,6 @@ export function AuthPage() {
       return toast.error(error.message);
     }
     if (!data.session) {
-      // auto-confirm on; sign in immediately if session was not returned
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: signUpEmail,
         password: signUpPw,
@@ -73,7 +129,7 @@ export function AuthPage() {
       }
     }
     setLoading(false);
-    toast.success("Account created");
+    toast.success(invitePrefilled ? "Joined the organization" : "Account created");
     navigate({ to: "/dashboard" });
   }
 
@@ -143,60 +199,103 @@ export function AuthPage() {
             </TabsContent>
 
             <TabsContent value="signup" className="mt-8">
-              <h1 className="text-2xl font-semibold tracking-tight">Create your organization</h1>
+              <h1 className="text-2xl font-semibold tracking-tight">
+                {invitePrefilled ? "Accept your invitation" : "Create your organization"}
+              </h1>
               <p className="mt-1 text-sm text-muted-foreground">
-                Spin up a Spasecor workspace for your space cyber team.
+                {invitePrefilled
+                  ? `You've been invited to join ${org || "an organization"}. Set your name and password to continue.`
+                  : "Spin up a Spasecor workspace for your space cyber team."}
               </p>
-              <form onSubmit={handleSignUp} className="mt-6 space-y-4">
-                <div className="grid grid-cols-2 gap-3">
+
+              {inviteLoading ? (
+                <div className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 className="size-4 animate-spin" /> Loading invitation…
+                </div>
+              ) : inviteError ? (
+                <div className="mt-6 rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">
+                  {inviteError}
+                </div>
+              ) : (
+                <form onSubmit={handleSignUp} className="mt-6 space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="su-name">Your name</Label>
+                      <Input
+                        id="su-name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="su-org">Organization</Label>
+                      <Input
+                        id="su-org"
+                        value={org}
+                        onChange={(e) => setOrg(e.target.value)}
+                        placeholder="ACME Aerospace"
+                        required
+                        disabled={invitePrefilled}
+                      />
+                    </div>
+                  </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="su-name">Your name</Label>
+                    <Label htmlFor="su-email">Work email</Label>
                     <Input
-                      id="su-name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      id="su-email"
+                      type="email"
+                      autoComplete="email"
+                      value={signUpEmail}
+                      onChange={(e) => setSignUpEmail(e.target.value)}
                       required
+                      disabled={invitePrefilled}
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="su-org">Organization</Label>
+                    <Label htmlFor="su-role">Role</Label>
+                    {invitePrefilled ? (
+                      <Input id="su-role" value={roleLabel(role)} disabled />
+                    ) : (
+                      <Select value={role} onValueChange={(v) => setRole(v as AppRole)}>
+                        <SelectTrigger id="su-role">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {ROLES.map((r) => (
+                            <SelectItem key={r.value} value={r.value}>
+                              {r.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                    {!invitePrefilled && (
+                      <p className="text-xs text-muted-foreground">
+                        As the workspace creator, you'll be the administrator regardless of this
+                        selection — invite teammates from Settings to assign other roles.
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="su-pw">Password</Label>
                     <Input
-                      id="su-org"
-                      value={org}
-                      onChange={(e) => setOrg(e.target.value)}
-                      placeholder="ACME Aerospace"
+                      id="su-pw"
+                      type="password"
+                      autoComplete="new-password"
+                      minLength={8}
+                      value={signUpPw}
+                      onChange={(e) => setSignUpPw(e.target.value)}
                       required
                     />
+                    <p className="text-xs text-muted-foreground">At least 8 characters.</p>
                   </div>
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="su-email">Work email</Label>
-                  <Input
-                    id="su-email"
-                    type="email"
-                    autoComplete="email"
-                    value={signUpEmail}
-                    onChange={(e) => setSignUpEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="su-pw">Password</Label>
-                  <Input
-                    id="su-pw"
-                    type="password"
-                    autoComplete="new-password"
-                    minLength={8}
-                    value={signUpPw}
-                    onChange={(e) => setSignUpPw(e.target.value)}
-                    required
-                  />
-                  <p className="text-xs text-muted-foreground">At least 8 characters.</p>
-                </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading && <Loader2 className="mr-2 size-4 animate-spin" />}Create account
-                </Button>
-              </form>
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading && <Loader2 className="mr-2 size-4 animate-spin" />}
+                    {invitePrefilled ? "Join organization" : "Create account"}
+                  </Button>
+                </form>
+              )}
             </TabsContent>
           </Tabs>
         </div>
