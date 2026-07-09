@@ -35,11 +35,11 @@ export function InvitePage() {
       const { data: u } = await supabase.auth.getUser();
 
       if (u.user) {
-        // If signed in with a different account, sign out and route to signup
+        // If signed in with a different account, sign out and route to auth
         if (u.user.email && u.user.email.toLowerCase() !== data.email.toLowerCase()) {
           setStatus("Signing out to accept invitation…");
           await supabase.auth.signOut();
-          navigate({ to: "/auth", search: { mode: "signup", token } });
+          navigate({ to: "/auth", search: { token } });
           return;
         }
         setStatus("Joining organization…");
@@ -50,9 +50,9 @@ export function InvitePage() {
         return;
       }
 
-      // Not signed in — send to Create account with details prefilled
-      setStatus("Redirecting to create account…");
-      navigate({ to: "/auth", search: { mode: "signup", token } });
+      // Not signed in — send to auth page (user can sign in or create account)
+      setStatus("Redirecting to sign in…");
+      navigate({ to: "/auth", search: { token } });
     })();
     return () => {
       mounted = false;

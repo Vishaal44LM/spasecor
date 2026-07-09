@@ -66,7 +66,7 @@ export function AuthPage() {
       } else if (new Date(data.expires_at) < new Date()) {
         setInviteError("This invitation has expired.");
       } else {
-        setTab("signup");
+        if (mode === "signup") setTab("signup");
         setSignUpEmail(data.email);
         setSignInEmail(data.email);
         setOrg((data.organizations as { name?: string } | null)?.name ?? "");
@@ -95,10 +95,15 @@ export function AuthPage() {
       }
       return toast.error(error.message);
     }
-    toast.success("Welcome back");
     if (token) {
       const { error: acceptErr } = await supabase.rpc("accept_invitation", { _token: token });
-      if (acceptErr) toast.error(acceptErr.message);
+      if (acceptErr) {
+        toast.error(acceptErr.message);
+        return;
+      }
+      toast.success("Joined the organization");
+    } else {
+      toast.success("Welcome back");
     }
     navigate({ to: redirect || "/dashboard" });
   }
