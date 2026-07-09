@@ -95,10 +95,15 @@ export function AuthPage() {
       }
       return toast.error(error.message);
     }
-    toast.success("Welcome back");
     if (token) {
       const { error: acceptErr } = await supabase.rpc("accept_invitation", { _token: token });
-      if (acceptErr) toast.error(acceptErr.message);
+      if (acceptErr) {
+        toast.error(acceptErr.message);
+        return;
+      }
+      toast.success("Joined the organization");
+    } else {
+      toast.success("Welcome back");
     }
     navigate({ to: redirect || "/dashboard" });
   }
