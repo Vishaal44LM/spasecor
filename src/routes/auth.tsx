@@ -66,7 +66,7 @@ export function AuthPage() {
       } else if (new Date(data.expires_at) < new Date()) {
         setInviteError("This invitation has expired.");
       } else {
-        setTab("signup");
+        if (mode === "signup") setTab("signup");
         setSignUpEmail(data.email);
         setSignInEmail(data.email);
         setOrg((data.organizations as { name?: string } | null)?.name ?? "");
