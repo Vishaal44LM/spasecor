@@ -1,0 +1,1 @@
+DROP TRIGGER IF EXISTS trg_org_invites_touch ON public.organization_invitations;
