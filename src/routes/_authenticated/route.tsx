@@ -20,7 +20,35 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { GlobalSearch } from "@/components/global-search";
 import { ThemeToggle } from "@/components/theme-toggle";
 
+/** Keeps every teammate's view of the shared workspace in sync in real time. */
+function useTeamSync() {
+  const qc = useQueryClient();
+  useEffect(() => {
+    const channel = supabase
+      .channel("team-workspace-sync")
+      .on("postgres_changes", { event: "*", schema: "public", table: "incidents" }, () => {
+        qc.invalidateQueries({ queryKey: ["incidents-all"] });
+        qc.invalidateQueries({ queryKey: ["incidents"] });
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "space_assets" }, () => {
+        qc.invalidateQueries({ queryKey: ["assets"] });
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "activity_log" }, () => {
+        qc.invalidateQueries({ queryKey: ["activity-recent"] });
+        qc.invalidateQueries({ queryKey: ["activity"] });
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "notifications" }, () => {
+        qc.invalidateQueries({ queryKey: ["notifications"] });
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [qc]);
+}
+
 export function AuthedLayout({ children }: { children: ReactNode }) {
+  useTeamSync();
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -33,6 +61,7 @@ export function AuthedLayout({ children }: { children: ReactNode }) {
     </SidebarProvider>
   );
 }
+
 
 function TopBar() {
   const { data: profile } = useProfile();
