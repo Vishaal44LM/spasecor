@@ -10,6 +10,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { StatusBadge, PriorityBadge } from "@/components/status-badge";
+import { TeamPanel } from "@/components/team-panel";
+
 import { Button } from "@/components/ui/button";
 import {
   ShieldAlert,
@@ -117,8 +119,9 @@ export function Dashboard() {
             Welcome back, {profile?.name?.split(" ")[0] || "Operator"}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Mission-critical incident operations at a glance.
+            Shared team workspace — everyone in {profile?.organizations?.name ?? "your organization"} sees this same board.
           </p>
+
         </div>
         <Button asChild>
           <Link to="/incidents/new">
@@ -255,7 +258,12 @@ export function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <TeamPanel incidents={all} />
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-3">
+        <Card className="lg:col-span-3">
+
           <CardHeader>
             <CardTitle>Recent reports</CardTitle>
             <CardDescription>Generated incident reports</CardDescription>
